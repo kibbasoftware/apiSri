@@ -3,6 +3,19 @@ const config = require('../../config/config');
 
 class Database {
   constructor() {
+    let poolConfig;
+    
+    if (config.database.connectionString) {
+      poolConfig = {
+        connectionString: config.database.connectionString,
+        // Mantener otras configuraciones
+        max: config.database.max,
+        idleTimeoutMillis: config.database.idleTimeoutMillis,
+        connectionTimeoutMillis: config.database.connectionTimeoutMillis
+      };
+    } else {
+      poolConfig = config.database;
+    }
     this.pool = new Pool(config.database);
     
     this.pool.on('connect', () => {
