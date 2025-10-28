@@ -1,5 +1,5 @@
 module.exports = {
-  database: {
+    database: {
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 5432,
     database: process.env.DB_NAME || 'consultas',
@@ -7,7 +7,11 @@ module.exports = {
     password: process.env.DB_PASSWORD || '',
     max: process.env.DB_MAX_CONNECTIONS || 20,
     idleTimeoutMillis: process.env.DB_IDLE_TIMEOUT || 30000,
-    connectionTimeoutMillis: process.env.DB_CONNECTION_TIMEOUT || 2000
+    connectionTimeoutMillis: process.env.DB_CONNECTION_TIMEOUT || 2000,
+    // ESTA LÍNEA ES CRÍTICA - debe estar presente
+    ssl: process.env.NODE_ENV === 'production' ? {
+      rejectUnauthorized: false
+    } : false
   },
   cedula: {
     loginUrl: process.env.CEDULA_LOGIN_URL || 'https://solutions.myfenixcloud.com/cif/login',
