@@ -38,19 +38,14 @@ class Ruc {
           ruc, nombre, domicilio, condicion, estado
       ) 
       VALUES ($1, $2, $3, $4, $5)
-      ON CONFLICT (ruc) DO NOTHING
       RETURNING *
     `;
 
     try {
       const result = await db.query(query, [
-        ruc, nombre, domicilio,condicion, estado
+        ruc, nombre, domicilio, condicion, estado
       ]);
       console.log('result::: ', result);
-      // Si no se insertó porque ya existe, retornar null
-      if (result.rows.length === 0) {
-        return { inserted: false, message: 'El DNI ya existe' };
-      }
 
       return { 
         inserted: true, 
@@ -58,6 +53,11 @@ class Ruc {
         message: 'Cliente insertado correctamente'
       };
     } catch (error) {
+      // Si es error de duplicado, manejarlo
+      if (error.code === '23505') {
+        return { inserted: false, message: 'El RUC ya existe' };
+      }
+      
       console.error('❌ Error insertando cliente:', error);
       throw error;
     }
