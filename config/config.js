@@ -1,12 +1,19 @@
 module.exports = {
   database: {
-    // Usar DATABASE_URL si existe, sino usar variables individuales
-    connectionString: process.env.DATABASE_URL || `postgres://${process.env.DB_USER || 'postgres'}:${process.env.DB_PASSWORD || ''}@${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || 5432}/${process.env.DB_NAME || 'consultas'}`,
-    // Configuración adicional
+    // EN PRODUCCIÓN usar DATABASE_URL de Heroku, en desarrollo usar variables individuales
+    connectionString: process.env.DATABASE_URL || null,
+    // Configuración para desarrollo (cuando no hay DATABASE_URL)
+    host: process.env.DB_HOST || 'localhost',
+    port: process.env.DB_PORT || 5432,
+    database: process.env.DB_NAME || 'consultas',
+    user: process.env.DB_USER || 'postgres',
+    password: process.env.DB_PASSWORD || '',
+    // Configuración SSL para producción
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    // Configuración adicional del pool
     max: process.env.DB_MAX_CONNECTIONS || 20,
     idleTimeoutMillis: process.env.DB_IDLE_TIMEOUT || 30000,
-    connectionTimeoutMillis: process.env.DB_CONNECTION_TIMEOUT || 2000,
-    // SSL ya está incluido en DATABASE_URL con sslmode=require
+    connectionTimeoutMillis: process.env.DB_CONNECTION_TIMEOUT || 2000
   },
   cedula: {
     loginUrl: process.env.CEDULA_LOGIN_URL || 'https://solutions.myfenixcloud.com/cif/login',

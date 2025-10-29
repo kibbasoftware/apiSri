@@ -5,18 +5,21 @@ class Database {
   constructor() {
     let poolConfig;
     
+    // Si hay connectionString (DATABASE_URL de Heroku), usarlo
     if (config.database.connectionString) {
       poolConfig = {
         connectionString: config.database.connectionString,
-        // Mantener otras configuraciones
+        ssl: config.database.ssl,
         max: config.database.max,
         idleTimeoutMillis: config.database.idleTimeoutMillis,
         connectionTimeoutMillis: config.database.connectionTimeoutMillis
       };
     } else {
+      // Para desarrollo, usar configuración individual
       poolConfig = config.database;
     }
-    this.pool = new Pool(config.database);
+    
+    this.pool = new Pool(poolConfig);
     
     this.pool.on('connect', () => {
       console.log('✅ Conexión a PostgreSQL establecida');
